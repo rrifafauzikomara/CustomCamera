@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CustomCameraSurfaceview</string>
+    <string name="take_photo">TAKE PHOTO</string>
+    <string name="permission_required">Permission Required</string>
+    <string name="permission_message">You must grant permission to access camera and external storage to run this application.</string>
+    <string name="permission_warning">All permissions are required.</string>
 </resources>
