@@ -4,6 +4,7 @@ import android.Manifest.permission.CAMERA
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.pm.PackageManager
 import android.hardware.Camera
+import android.media.MediaScannerConnection
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -20,6 +21,8 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.PictureCallback {
 
@@ -181,13 +184,29 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.Picture
 
     private fun saveImage(bytes: ByteArray) {
         val outStream: FileOutputStream
+
+        val wallpaperDirectory = File(
+            Environment.getExternalStorageDirectory().toString() + IMAGE_DIRECTORY
+        )
+        // have the object build the directory structure, if needed.
+
+        if (!wallpaperDirectory.exists()) {
+            wallpaperDirectory.mkdirs()
+        }
+
         try {
-            val fileName = "TUTORIALWING_" + System.currentTimeMillis() + ".jpg"
-            val file = File(Environment.getExternalStorageDirectory(), fileName)
+            val file = File(wallpaperDirectory, Calendar.getInstance()
+                .timeInMillis.toString() + ".jpg")
+            file.createNewFile()
             outStream = FileOutputStream(file)
             outStream.write(bytes)
+            MediaScannerConnection.scanFile(
+                this,
+                arrayOf(file.path),
+                arrayOf("image/jpeg"), null
+            )
             outStream.close()
-            Toast.makeText(this@MainActivity, "Picture Saved: $fileName", Toast.LENGTH_LONG).show()
+            Toast.makeText(this@MainActivity, "Picture Saved: ${file.absoluteFile}", Toast.LENGTH_LONG).show()
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
         } catch (e: IOException) {
@@ -196,6 +215,7 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.Picture
     }
 
     companion object {
-        const val REQUEST_CODE = 100
+        private const val REQUEST_CODE = 100
+        private const val IMAGE_DIRECTORY = "/CustomCamera"
     }
 }
