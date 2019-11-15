@@ -36,7 +36,7 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.Pictu
     }
 
     private fun setupSurfaceHolder() {
-        setViewVisibility(R.id.startBtn, View.VISIBLE)
+        setViewVisibility(R.id.linear, View.VISIBLE)
         setViewVisibility(R.id.surfaceView, View.VISIBLE)
 
         surfaceHolder = surfaceView!!.holder
@@ -46,7 +46,9 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.Pictu
 
     private fun setBtnClick() {
         val startBtn = findViewById<Button>(R.id.startBtn)
+        val backBtn = findViewById<Button>(R.id.btnBack)
         startBtn?.setOnClickListener { captureImage() }
+        backBtn?.setOnClickListener {  }
     }
 
     private fun captureImage() {
