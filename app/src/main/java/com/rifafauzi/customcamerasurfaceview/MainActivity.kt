@@ -2,11 +2,14 @@ package com.rifafauzi.customcamerasurfaceview
 
 import android.Manifest
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -23,8 +26,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        imageView.setImageBitmap(CameraActivity.bitmap)
-
+        val bitmap = CameraActivity.bitmap
+        val rotatedBitmap = bitmap?.rotate(90)
+        Glide.with(applicationContext)
+            .load(rotatedBitmap)
+            .into(imageView)
         btnCamera.setOnClickListener {
             requestReadPermissions()
         }
@@ -32,6 +38,33 @@ class MainActivity : AppCompatActivity() {
         btnProcess.setOnClickListener {
 
         }
+    }
+
+    private fun Bitmap.rotate(degree:Int):Bitmap{
+        // Initialize a new matrix
+        val matrix = Matrix()
+
+        // Rotate the bitmap
+        matrix.postRotate(degree.toFloat())
+
+        // Resize the bitmap
+        val scaledBitmap = Bitmap.createScaledBitmap(
+            this,
+            width,
+            height,
+            true
+        )
+
+        // Create and return the rotated bitmap
+        return Bitmap.createBitmap(
+            scaledBitmap,
+            0,
+            0,
+            scaledBitmap.width,
+            scaledBitmap.height,
+            matrix,
+            true
+        )
     }
 
     private fun requestReadPermissions() {
@@ -44,8 +77,6 @@ class MainActivity : AppCompatActivity() {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport) {
                     // check if all permissions are granted
                     if (report.areAllPermissionsGranted()) {
-                        Toast.makeText(applicationContext, "All permissions are granted by user!", Toast.LENGTH_SHORT)
-                            .show()
                         startActivity(Intent(this@MainActivity, CameraActivity::class.java))
                         finish()
                     }
