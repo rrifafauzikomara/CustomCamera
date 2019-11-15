@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        imageView.setImageBitmap(CameraActivity.bitmap)
+
         btnCamera.setOnClickListener {
             requestReadPermissions()
         }

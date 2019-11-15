@@ -1,5 +1,8 @@
 package com.rifafauzi.customcamerasurfaceview
 
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.hardware.Camera
 import android.media.MediaScannerConnection
 import android.os.Bundle
@@ -8,7 +11,6 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.io.File
 import java.io.FileNotFoundException
@@ -21,6 +23,8 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.Pictu
     private var surfaceHolder: SurfaceHolder? = null
     private var camera: Camera? = null
     private var surfaceView: SurfaceView? = null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,6 +112,8 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.Pictu
 
     override fun onPictureTaken(bytes: ByteArray, camera: Camera) {
         saveImage(bytes)
+        bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        startActivity(Intent(this@CameraActivity, MainActivity::class.java))
         resetCamera()
     }
 
@@ -135,7 +141,7 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.Pictu
                 arrayOf("image/jpeg"), null
             )
             outStream.close()
-            Toast.makeText(this, "Picture Saved: ${file.absoluteFile}", Toast.LENGTH_LONG).show()
+//            Toast.makeText(this, "Picture Saved: ${file.absoluteFile}", Toast.LENGTH_LONG).show()
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
         } catch (e: IOException) {
@@ -145,5 +151,6 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.Pictu
 
     companion object {
         private const val IMAGE_DIRECTORY = "/CustomCamera"
+        var bitmap: Bitmap? = null
     }
 }
