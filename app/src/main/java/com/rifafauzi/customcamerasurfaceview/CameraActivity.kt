@@ -12,10 +12,7 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
 import java.util.*
 
 class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.PictureCallback {
@@ -23,8 +20,6 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.Pictu
     private var surfaceHolder: SurfaceHolder? = null
     private var camera: Camera? = null
     private var surfaceView: SurfaceView? = null
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +37,6 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.Pictu
     private fun setupSurfaceHolder() {
         setViewVisibility(R.id.linear, View.VISIBLE)
         setViewVisibility(R.id.surfaceView, View.VISIBLE)
-
         surfaceHolder = surfaceView!!.holder
         surfaceHolder!!.addCallback(this)
         setBtnClick()
@@ -111,43 +105,78 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.Pictu
     }
 
     override fun onPictureTaken(bytes: ByteArray, camera: Camera) {
-        saveImage(bytes)
         bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+//        saveImage(bitmap)
         startActivity(Intent(this@CameraActivity, MainActivity::class.java))
         resetCamera()
     }
 
-    private fun saveImage(bytes: ByteArray) {
-        val outStream: FileOutputStream
+    // save as bitmap
+//    private fun saveImage(myBitmap: Bitmap?) {
+//        val outStream: FileOutputStream
+//        val bytes = ByteArrayOutputStream()
+//        myBitmap?.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
+//
+//        val wallpaperDirectory = File(
+//            Environment.getExternalStorageDirectory().toString() + IMAGE_DIRECTORY
+//        )
+//
+//        if (!wallpaperDirectory.exists()) {
+//            wallpaperDirectory.mkdirs()
+//        }
+//
+//        try {
+//            val file = File(wallpaperDirectory, Calendar.getInstance()
+//                .timeInMillis.toString() + ".jpg")
+//            file.createNewFile()
+//
+//            outStream = FileOutputStream(file)
+//            outStream.write(bytes.toByteArray())
+//            MediaScannerConnection.scanFile(
+//                this,
+//                arrayOf(file.path),
+//                arrayOf("image/jpeg"), null
+//            )
+//            outStream.close()
+//        } catch (e: FileNotFoundException) {
+//            e.printStackTrace()
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
+//
+//    }
 
-        val wallpaperDirectory = File(
-            Environment.getExternalStorageDirectory().toString() + IMAGE_DIRECTORY
-        )
-        // have the object build the directory structure, if needed.
-
-        if (!wallpaperDirectory.exists()) {
-            wallpaperDirectory.mkdirs()
-        }
-
-        try {
-            val file = File(wallpaperDirectory, Calendar.getInstance()
-                .timeInMillis.toString() + ".jpg")
-            file.createNewFile()
-            outStream = FileOutputStream(file)
-            outStream.write(bytes)
-            MediaScannerConnection.scanFile(
-                this,
-                arrayOf(file.path),
-                arrayOf("image/jpeg"), null
-            )
-            outStream.close()
-//            Toast.makeText(this, "Picture Saved: ${file.absoluteFile}", Toast.LENGTH_LONG).show()
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
+    // save as byte array
+//    private fun saveImage(bytes: ByteArray) {
+//        val outStream: FileOutputStream
+//
+//        val wallpaperDirectory = File(
+//            Environment.getExternalStorageDirectory().toString() + IMAGE_DIRECTORY
+//        )
+//        // have the object build the directory structure, if needed.
+//
+//        if (!wallpaperDirectory.exists()) {
+//            wallpaperDirectory.mkdirs()
+//        }
+//
+//        try {
+//            val file = File(wallpaperDirectory, Calendar.getInstance()
+//                .timeInMillis.toString() + ".jpg")
+//            file.createNewFile()
+//            outStream = FileOutputStream(file)
+//            outStream.write(bytes)
+//            MediaScannerConnection.scanFile(
+//                this,
+//                arrayOf(file.path),
+//                arrayOf("image/jpeg"), null
+//            )
+//            outStream.close()
+//        } catch (e: FileNotFoundException) {
+//            e.printStackTrace()
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
+//    }
 
     companion object {
         private const val IMAGE_DIRECTORY = "/CustomCamera"
