@@ -3,10 +3,13 @@ package com.rifafauzi.customcamerasurfaceview
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.hardware.Camera
 import android.media.MediaScannerConnection
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
+import android.util.SparseIntArray
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
@@ -16,6 +19,15 @@ import java.io.*
 import java.util.*
 
 class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.PictureCallback {
+
+    private val orientations = SparseIntArray()
+
+    init {
+        orientations.append(0, 90)
+        orientations.append(90, 0)
+        orientations.append(180, 270)
+        orientations.append(270, 180)
+    }
 
     private var surfaceHolder: SurfaceHolder? = null
     private var camera: Camera? = null
@@ -105,8 +117,9 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.Pictu
     }
 
     override fun onPictureTaken(bytes: ByteArray, camera: Camera) {
-        bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-//        saveImage(bitmap)
+        saveImage(bytes)
+/*        bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        saveImage(bitmap)*/
         startActivity(Intent(this@CameraActivity, MainActivity::class.java))
         resetCamera()
     }
@@ -137,6 +150,7 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.Pictu
 //                arrayOf(file.path),
 //                arrayOf("image/jpeg"), null
 //            )
+
 //            outStream.close()
 //        } catch (e: FileNotFoundException) {
 //            e.printStackTrace()
@@ -147,36 +161,70 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback, Camera.Pictu
 //    }
 
     // save as byte array
-//    private fun saveImage(bytes: ByteArray) {
-//        val outStream: FileOutputStream
-//
-//        val wallpaperDirectory = File(
-//            Environment.getExternalStorageDirectory().toString() + IMAGE_DIRECTORY
-//        )
-//        // have the object build the directory structure, if needed.
-//
-//        if (!wallpaperDirectory.exists()) {
-//            wallpaperDirectory.mkdirs()
-//        }
-//
-//        try {
-//            val file = File(wallpaperDirectory, Calendar.getInstance()
-//                .timeInMillis.toString() + ".jpg")
-//            file.createNewFile()
-//            outStream = FileOutputStream(file)
-//            outStream.write(bytes)
-//            MediaScannerConnection.scanFile(
-//                this,
-//                arrayOf(file.path),
-//                arrayOf("image/jpeg"), null
-//            )
-//            outStream.close()
-//        } catch (e: FileNotFoundException) {
-//            e.printStackTrace()
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//        }
-//    }
+    private fun saveImage(bytes: ByteArray) {
+        val outStream: FileOutputStream
+
+        val wallpaperDirectory = File(
+            Environment.getExternalStorageDirectory().toString() + IMAGE_DIRECTORY
+        )
+        // have the object build the directory structure, if needed.
+
+        if (!wallpaperDirectory.exists()) {
+            wallpaperDirectory.mkdirs()
+        }
+
+        val cameraInfo = Camera.CameraInfo()
+        val cameraOrientation = cameraInfo.orientation
+
+        val captureOrientation = orientations.get(cameraOrientation)
+        Log.i("camera-tag","Capture orientation: $captureOrientation")
+
+        Log.i("camera-tag","Start loading byte array to bitmap.")
+        val image = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        Log.i("camera-tag","Done loading byte array to bitmap.")
+
+
+        try {
+            val file = File(wallpaperDirectory, Calendar.getInstance()
+                .timeInMillis.toString() + ".jpg")
+            file.createNewFile()
+
+
+            //we create finalBitmap, from image bitmap
+            Log.i("camera-tag","Start rotating bitmap if needed.")
+            val finalBitmap = if (captureOrientation != 0){
+                val w = image.width
+                val h = image.height
+
+                val matrix = Matrix()
+                matrix.postRotate(captureOrientation.toFloat())
+
+                Bitmap.createBitmap(image, 0, 0, w, h, matrix, false)
+            }
+            else image
+            Log.i("camera-tag","Done rotating bitmap.")
+
+            //now saving it to file
+            Log.i("camera-tag","Start saving bitmap to a file.")
+            outStream = FileOutputStream(file)
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
+            Log.i("camera-tag","Done saving bitmap to a file.")
+
+            MediaScannerConnection.scanFile(
+                this,
+                arrayOf(file.path),
+                arrayOf("image/jpeg"), null
+            )
+            outStream.close()
+
+            bitmap = image
+
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
 
     companion object {
         private const val IMAGE_DIRECTORY = "/CustomCamera"

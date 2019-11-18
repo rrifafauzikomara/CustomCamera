@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
@@ -37,17 +38,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         FirebaseApp.initializeApp(this)
 
+        Log.i("camera-tag","Getting bitmap from main activity.")
         val bitmap = CameraActivity.bitmap
         val rotatedBitmap = bitmap?.rotate(90)
         Glide.with(applicationContext)
             .load(rotatedBitmap)
             .into(imageView)
+        Log.i("camera-tag","Glide finished loading.")
         btnCamera.setOnClickListener {
             requestReadPermissions()
         }
 
         btnProcess.setOnClickListener {
-            analyzeImage(rotatedBitmap)
+
         }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
