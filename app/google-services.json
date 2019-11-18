@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "32602638734",
+    "firebase_url": "https://ml-kit-5c1b0.firebaseio.com",
+    "project_id": "ml-kit-5c1b0",
+    "storage_bucket": "ml-kit-5c1b0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32602638734:android:953e048ad77581e5683cdf",
+        "android_client_info": {
+          "package_name": "com.rifafauzi.customcamerasurfaceview"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "32602638734-5n0cc09vceul1dbcpuqlnjqdn5ruokhd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rifafauzi.customcamerasurfaceview",
+            "certificate_hash": "58739429656a05415768862cb07043cdfc500d20"
+          }
+        },
+        {
+          "client_id": "32602638734-qk8ft7eoo9lfnr727i5be76tefiqs02q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBc6m-m3qitltOcPRQv6ELZ1ouhlgZD1lM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "32602638734-qk8ft7eoo9lfnr727i5be76tefiqs02q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
