@@ -30,7 +30,7 @@ class CameraPreview(context: Context, private var mCamera: Camera?) : SurfaceVie
                 mCamera!!.startPreview()
             }
         } catch (e: IOException) {
-            Log.d(View.VIEW_LOG_TAG, "Error setting camera preview: " + e.message)
+            e.printStackTrace()
         }
 
     }

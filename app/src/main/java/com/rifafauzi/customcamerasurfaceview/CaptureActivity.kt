@@ -67,18 +67,15 @@ class CaptureActivity : AppCompatActivity() {
     }
 
     public override fun onResume() {
-
         super.onResume()
         if (mCamera == null) {
             mCamera = Camera.open()
             mCamera!!.setDisplayOrientation(90)
             mPicture = pictureCallback
             mPreview!!.refreshCamera(mCamera)
-            Log.d("noooo", "null")
         } else {
             Log.d("noooo", "no null")
         }
-
     }
 
     override fun onPause() {
