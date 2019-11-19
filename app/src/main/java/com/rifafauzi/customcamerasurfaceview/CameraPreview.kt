@@ -1,23 +1,23 @@
 package com.rifafauzi.customcamerasurfaceview
 
-import java.io.IOException
 import android.content.Context
 import android.hardware.Camera
 import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
+import java.io.IOException
 
 /**
  * Created by rrifafauzikomara on 2019-11-14.
  */
 
 class CameraPreview(context: Context, private var mCamera: Camera?) : SurfaceView(context), SurfaceHolder.Callback {
-    private val mHolder: SurfaceHolder
+    private val mHolder: SurfaceHolder = holder
 
     init {
-        mHolder = holder
         mHolder.addCallback(this)
+        isFocusable = true
         // deprecated setting, but required on Android versions prior to 3.0
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
     }
@@ -66,13 +66,12 @@ class CameraPreview(context: Context, private var mCamera: Camera?) : SurfaceVie
         refreshCamera(mCamera)
     }
 
-    fun setCamera(camera: Camera?) {
+    private fun setCamera(camera: Camera?) {
         //method to set a camera instance
         mCamera = camera
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
-        // TODO Auto-generated method stub
         // mCamera.release();
 
     }
