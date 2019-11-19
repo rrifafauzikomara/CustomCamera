@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,32 +8,71 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/cPreview">
+        android:id="@+id/cPreview"
+        app:layout_constraintBottom_toTopOf="@+id/frame"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    </LinearLayout>
-    <LinearLayout
+    <ImageView
+        android:id="@+id/ivBgContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom|center"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_content"
+        app:layout_constraintBottom_toTopOf="@+id/frame"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
-        <Button
+    <FrameLayout
+        android:id="@+id/frame"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/tvResult"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btnCam"
-            android:textSize="15sp"
-            android:text="Take Photo"/>
+            android:layout_marginTop="10dp"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center_horizontal|top"
+            android:text="Arahkan kamera pada frame yang telah disediakan"/>
 
-        <Button
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/linear"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/btnSwitch"
-            android:layout_marginLeft="0dp"
-            android:textSize="15sp"
-            android:text="Switch Camera"/>
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal|bottom">
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:layout_marginRight="30dp"
+                android:text="Back" />
 
-</RelativeLayout>
+            <Button
+                android:id="@+id/btnCam"
+                android:layout_width="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_height="wrap_content"
+                android:text="Take Photo"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
