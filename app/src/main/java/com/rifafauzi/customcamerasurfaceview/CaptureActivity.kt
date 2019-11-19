@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
+import com.rifafauzi.customcamerasurfaceview.camera.CameraPreview
 import java.io.IOException
 
 class CaptureActivity : AppCompatActivity() {
@@ -47,7 +48,10 @@ class CaptureActivity : AppCompatActivity() {
     private fun initCamera(){
 
         cameraPreview = findViewById(R.id.cPreview)
-        mPreview = CameraPreview(myContext as CaptureActivity, mCamera)
+        mPreview = CameraPreview(
+            myContext as CaptureActivity,
+            mCamera
+        )
         cameraPreview!!.addView(mPreview)
 
         mCamera = Camera.open()

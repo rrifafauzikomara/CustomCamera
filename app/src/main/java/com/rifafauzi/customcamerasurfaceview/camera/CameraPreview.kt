@@ -1,4 +1,4 @@
-package com.rifafauzi.customcamerasurfaceview
+package com.rifafauzi.customcamerasurfaceview.camera
 
 import android.content.Context
 import android.hardware.Camera
