@@ -10,6 +10,9 @@ buildscript {
         navigationVersion = "1.0.0"
         junitVersion = "4.12"
         testRunnerVersion = "1.2.0"
+        dexterVersion = "5.0.0"
+        mlVersion = "24.0.1"
+        analyticVersion = "17.2.1"
     }
     repositories {
         google()
@@ -17,7 +20,7 @@ buildscript {
         
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
+        classpath 'com.android.tools.build:gradle:3.5.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "com.google.gms:google-services:4.3.3"
         // NOTE: Do not place your application dependencies here; they belong
