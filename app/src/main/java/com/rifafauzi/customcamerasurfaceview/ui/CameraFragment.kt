@@ -130,7 +130,6 @@ class CameraFragment : Fragment() {
                 Executors.newSingleThreadExecutor(),
                 object : ImageCapture.OnImageSavedListener {
                     override fun onImageSaved(file: File) {
-
                         requireActivity().runOnUiThread {
                             launchGalleryFragment(file.absolutePath)
                         }
