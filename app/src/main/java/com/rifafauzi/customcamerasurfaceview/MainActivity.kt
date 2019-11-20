@@ -1,106 +1,87 @@
 package com.rifafauzi.customcamerasurfaceview
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.StrictMode
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_main.*
+import androidx.navigation.ui.setupActionBarWithNavController
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
+    private lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val builder = StrictMode.VmPolicy.Builder()
-        StrictMode.setVmPolicy(builder.build())
-
-        navController = Navigation.findNavController(this, R.id.mainContent)
-
-        if (isCameraPermissionGranted()) {
-            displayCameraFragment()
-        } else {
-            requestCameraPermission()
-        }
-
-//        requestReadPermissions()
+        initMain()
+        setupToolbar()
+        setupNavController()
 
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_REQUEST_CODE) {
-            when {
-                grantResults.contains(PackageManager.PERMISSION_GRANTED) -> displayCameraFragment()
-                shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> requestCameraPermission()
-                else -> displayErrorMessage()
+    private fun initMain() {
+        navController = Navigation.findNavController(this, R.id.mainContent)
+        toolbar = findViewById(R.id.mainToolbar)
+    }
+
+    private fun setupToolbar() {
+        setSupportActionBar(toolbar)
+        setupActionBarWithNavController(navController)
+    }
+
+    private fun setupNavController() {
+        navController.addOnDestinationChangedListener(navigationListener)
+    }
+
+    private fun hideToolbarSubtitle() {
+        supportActionBar?.subtitle = null
+    }
+
+    private fun showToolbar(shouldShow: Boolean) {
+        if (shouldShow) toolbar.visibility = View.VISIBLE else toolbar.visibility = View.GONE
+    }
+
+    private fun showToolbarBackArrow(shouldShow: Boolean) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(shouldShow)
+    }
+
+    private val navigationListener =
+        NavController.OnDestinationChangedListener { _, destination, _ ->
+            invalidateOptionsMenu()
+            hideToolbarSubtitle()
+            when (destination.id) {
+                R.id.cameraFragment -> {
+                    showToolbar(false)
+                    showToolbarBackArrow(false)
+                }
+                R.id.galleryFragment -> {
+                    showToolbar(true)
+                    showToolbarBackArrow(true)
+                }
+                else -> {
+                    showToolbar(false)
+                    showToolbarBackArrow(false)
+                }
             }
         }
-    }
 
-    private fun isCameraPermissionGranted(): Boolean {
-        val permission =
-            ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-        return permission == PackageManager.PERMISSION_GRANTED
-    }
+    override fun onBackPressed() {
+        when (navController.currentDestination?.id) {
+            R.id.cameraFragment -> {
+                finish()
+            }
+            R.id.galleryFragment -> {
+                navController.navigate(R.id.cameraFragment)
+            }
 
-    private fun requestCameraPermission() {
-        requestPermissions(arrayOf(Manifest.permission.CAMERA),
-            CAMERA_REQUEST_CODE
-        )
-    }
-
-//    private fun requestReadPermissions() {
-//        Dexter.withActivity(this)
-//            .withPermissions(Manifest.permission.CAMERA)
-//            .withListener(object : MultiplePermissionsListener {
-//                override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-//                    if (report.areAllPermissionsGranted()) {
-//                        displayCamera()
-//                    }
-//
-//                    // check for permanent denial of any permission
-//                    if (report.isAnyPermissionPermanentlyDenied) {
-//                        // show alert dialog navigating to Settings
-//                        displayErrorMessage()
-//                    }
-//                }
-//
-//                override fun onPermissionRationaleShouldBeShown(permissions: List<PermissionRequest>, token: PermissionToken) {
-//                    token.continuePermissionRequest()
-//                }
-//
-//            }).withErrorListener { Toast.makeText(applicationContext, "Some Error! ", Toast.LENGTH_SHORT).show() }
-//            .onSameThread()
-//            .check()
-//    }
-
-    private fun displayCameraFragment() {
-        navController.navigate(R.id.cameraFragment)
-    }
-
-    private fun displayErrorMessage() {
-        Snackbar.make(
-            root_layout,
-            "The camera permission must be granted in order to use this app",
-            Snackbar.LENGTH_INDEFINITE
-        ).setAction("Retry") { requestCameraPermission() }
-            .show()
-    }
-
-    companion object {
-        private const val CAMERA_REQUEST_CODE = 20
+            else -> {
+                navController.navigateUp()
+            }
+        }
     }
 
 }

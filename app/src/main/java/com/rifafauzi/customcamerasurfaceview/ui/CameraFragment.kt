@@ -15,8 +15,7 @@ import androidx.camera.core.CameraX
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
-import androidx.navigation.Navigation
-import com.rifafauzi.customcamerasurfaceview.R
+import androidx.navigation.fragment.findNavController
 import com.rifafauzi.customcamerasurfaceview.utils.FileCreator
 import com.rifafauzi.customcamerasurfaceview.utils.FileCreator.JPEG_FORMAT
 import com.rifafauzi.customcamerasurfaceview.utils.UseCaseConfigBuilder
@@ -34,7 +33,7 @@ class CameraFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_camera, container, false)
+        return inflater.inflate(com.rifafauzi.customcamerasurfaceview.R.layout.fragment_camera, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -131,12 +130,17 @@ class CameraFragment : Fragment() {
                 Executors.newSingleThreadExecutor(),
                 object : ImageCapture.OnImageSavedListener {
                     override fun onImageSaved(file: File) {
-                        val arguments =
-                            GalleryFragment.arguments(
-                                file.absolutePath
-                            )
-                        Navigation.findNavController(requireActivity(), R.id.mainContent)
-                            .navigate(R.id.galleryFragment, arguments)
+
+                        requireActivity().runOnUiThread {
+                            launchGalleryFragment(file.absolutePath)
+                        }
+
+//                        val arguments =
+//                            GalleryFragment.arguments(
+//                                file.absolutePath
+//                            )
+//                        Navigation.findNavController(requireActivity(), R.id.mainContent)
+//                            .navigate(R.id.galleryFragment, arguments)
                     }
 
                     override fun onError(
@@ -168,6 +172,11 @@ class CameraFragment : Fragment() {
                 )
             })
         return analysis
+    }
+
+    private fun launchGalleryFragment(path: String) {
+        val action = CameraFragmentDirections.actionLaunchGalleryFragment(path)
+        findNavController().navigate(action)
     }
 
 }

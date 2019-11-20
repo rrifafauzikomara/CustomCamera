@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+// for navigation
+apply plugin: 'androidx.navigation.safeargs'
 
 android {
     compileSdkVersion 29
@@ -32,17 +34,24 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompatVersion"
     implementation "com.google.android.material:material:$materialVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
-    implementation "android.arch.navigation:navigation-fragment:$navigationVersion"
-    implementation "android.arch.navigation:navigation-ui:$navigationVersion"
-    implementation "androidx.camera:camera-core:$cameraXVersion"
-    implementation "androidx.camera:camera-camera2:$cameraXVersion"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test:runner:$testRunnerVersion"
 
+    // navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+
+    // cameraX
+    implementation "androidx.camera:camera-core:$cameraXVersion"
+    implementation "androidx.camera:camera-camera2:$cameraXVersion"
+
     // firebase ml kit
     implementation "com.google.firebase:firebase-ml-vision:$mlVersion"
     implementation "com.google.firebase:firebase-analytics:$analyticVersion"
+
+    // glide
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
 
     // dexter permission
     implementation "com.karumi:dexter:$dexterVersion"

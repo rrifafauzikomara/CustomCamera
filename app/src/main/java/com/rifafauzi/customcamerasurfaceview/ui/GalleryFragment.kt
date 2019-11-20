@@ -1,14 +1,16 @@
 package com.rifafauzi.customcamerasurfaceview.ui
 
 
-import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.navigation.Navigation
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.rifafauzi.customcamerasurfaceview.R
 
 /**
@@ -16,31 +18,38 @@ import com.rifafauzi.customcamerasurfaceview.R
  */
 class GalleryFragment : Fragment() {
 
+    private lateinit var image: ImageView
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var btnProcess: FrameLayout
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_gallery, container, false)
-        return ImageView(requireContext())
+        return inflater.inflate(R.layout.fragment_gallery, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val imageFilePath = arguments?.getString(KEY_IMAGE_FILE_PATH)
-        if (imageFilePath.isNullOrBlank()) {
-            Navigation.findNavController(requireActivity(), R.id.mainContent).popBackStack()
-        } else {
-            (view as ImageView).setImageURI(Uri.parse(imageFilePath))
-        }
-    }
+        image = view.findViewById(R.id.img)
+        recyclerView = view.findViewById(R.id.recycler_view)
+        btnProcess = view.findViewById(R.id.btnRecognition)
 
-    companion object {
-        private const val KEY_IMAGE_FILE_PATH = "key_image_file_path"
-        fun arguments(absolutePath: String): Bundle {
-            return Bundle().apply { putString(KEY_IMAGE_FILE_PATH, absolutePath) }
+        val imageFilePath = GalleryFragmentArgs.fromBundle(arguments!!).data
+
+        if (imageFilePath.isBlank()) {
+            Log.i(
+                "GalleryFragment",
+                "Image is Null or Empty"
+            )
+        } else {
+            Glide.with(activity!!)
+                .load(imageFilePath)
+                .into(image)
         }
+
     }
 
 }
