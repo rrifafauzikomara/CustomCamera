@@ -10,12 +10,15 @@ import android.view.LayoutInflater
 import android.view.Surface
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.camera.core.CameraX
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.navigation.fragment.findNavController
+import com.rifafauzi.customcamerasurfaceview.R
+import com.rifafauzi.customcamerasurfaceview.preview.Rectangle
 import com.rifafauzi.customcamerasurfaceview.utils.FileCreator
 import com.rifafauzi.customcamerasurfaceview.utils.FileCreator.JPEG_FORMAT
 import com.rifafauzi.customcamerasurfaceview.utils.UseCaseConfigBuilder
@@ -28,12 +31,17 @@ import java.util.concurrent.Executors
  */
 class CameraFragment : Fragment() {
 
+    private lateinit var linearLayout: LinearLayout
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(com.rifafauzi.customcamerasurfaceview.R.layout.fragment_camera, container, false)
+        val view = inflater.inflate(R.layout.fragment_camera, container, false)
+        linearLayout = view.findViewById(R.id.surface)
+        linearLayout.addView(Rectangle(context!!))
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
