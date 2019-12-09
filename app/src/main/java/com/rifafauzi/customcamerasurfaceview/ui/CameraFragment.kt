@@ -134,13 +134,6 @@ class CameraFragment : Fragment() {
                         requireActivity().runOnUiThread {
                             launchGalleryFragment(file.absolutePath)
                         }
-
-//                        val arguments =
-//                            GalleryFragment.arguments(
-//                                file.absolutePath
-//                            )
-//                        Navigation.findNavController(requireActivity(), R.id.mainContent)
-//                            .navigate(R.id.galleryFragment, arguments)
                     }
 
                     override fun onError(
