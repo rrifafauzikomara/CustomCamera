@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.rifafauzi.customcamerasurfaceview.SplashFragment"
+        android:name="com.rifafauzi.customcamerasurfaceview.ui.SplashFragment"
         tools:layout="@layout/fragment_splash">
         <action
             android:id="@+id/actionLaunchCameraFragment"

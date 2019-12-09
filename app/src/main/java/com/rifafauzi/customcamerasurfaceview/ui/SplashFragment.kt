@@ -1,4 +1,4 @@
-package com.rifafauzi.customcamerasurfaceview
+package com.rifafauzi.customcamerasurfaceview.ui
 
 
 import android.Manifest
@@ -16,6 +16,8 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.rifafauzi.customcamerasurfaceview.R
+import com.rifafauzi.customcamerasurfaceview.SplashFragmentDirections
 import kotlinx.android.synthetic.main.fragment_splash.*
 
 /**
@@ -65,7 +67,8 @@ class SplashFragment : Fragment() {
     }
 
     private fun displayCameraFragment() {
-        val action = SplashFragmentDirections.actionLaunchCameraFragment()
+        val action =
+            SplashFragmentDirections.actionLaunchCameraFragment()
         findNavController().navigate(action)
     }
 

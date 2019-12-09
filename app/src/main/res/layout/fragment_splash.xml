@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
-    tools:context=".SplashFragment"
+    tools:context=".ui.SplashFragment"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ImageView
