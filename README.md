@@ -1,5 +1,5 @@
-# CustomCameraSurfaceview
-Create custom frame camera using Surfaceview in branch <b>master</b> and CameraX in branch custom_camerax
+# Custom Camera for Text Recognition
+Create custom frame camera using Surfaceview in branch <b>master</b> and CameraX in branch <b>custom_camerax</b>
 
 ## Screenshot
 
