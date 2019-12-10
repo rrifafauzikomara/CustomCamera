@@ -17,7 +17,6 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.rifafauzi.customcamerasurfaceview.R
-import com.rifafauzi.customcamerasurfaceview.SplashFragmentDirections
 import kotlinx.android.synthetic.main.fragment_splash.*
 
 /**
