@@ -1,8 +1,6 @@
 package com.rifafauzi.customcamerasurfaceview.ui
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
+import android.graphics.*
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,6 +17,7 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText
 import com.rifafauzi.customcamerasurfaceview.R
 import com.rifafauzi.customcamerasurfaceview.adapter.TextAdapter
 import com.rifafauzi.customcamerasurfaceview.model.TextModel
+import kotlinx.android.synthetic.main.fragment_gallery.*
 
 /**
  * A simple [Fragment] subclass.
@@ -26,12 +25,12 @@ import com.rifafauzi.customcamerasurfaceview.model.TextModel
 class GalleryFragment : Fragment() {
 
     private lateinit var imageView: ImageView
-    private lateinit var recyclerView: RecyclerView
+//    private lateinit var recyclerView: RecyclerView
     private lateinit var btnProcess: FrameLayout
     private lateinit var tvButton: TextView
     private lateinit var progressBar: ProgressBar
 
-    private val textRecognitionModels = ArrayList<TextModel>()
+//    private val textRecognitionModels = ArrayList<TextModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +44,7 @@ class GalleryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         imageView = view.findViewById(R.id.img)
-        recyclerView = view.findViewById(R.id.recycler_view)
+//        recyclerView = view.findViewById(R.id.recycler_view)
         btnProcess = view.findViewById(R.id.btnRecognition)
         tvButton = view.findViewById(R.id.btnText)
         progressBar = view.findViewById(R.id.btnProgress)
@@ -69,8 +68,8 @@ class GalleryFragment : Fragment() {
             analyzeImage(rotatedBitmap)
         }
 
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = TextAdapter(context!!, textRecognitionModels)
+//        recyclerView.layoutManager = LinearLayoutManager(context)
+//        recyclerView.adapter = TextAdapter(context!!, textRecognitionModels)
 
     }
 
@@ -107,21 +106,22 @@ class GalleryFragment : Fragment() {
             return
         }
 
-        textRecognitionModels.clear()
-        recyclerView.adapter?.notifyDataSetChanged()
+//        textRecognitionModels.clear()
+//        recyclerView.adapter?.notifyDataSetChanged()
         showProgress()
 
         val firebaseVisionImage = FirebaseVisionImage.fromBitmap(image)
         val textRecognizer = FirebaseVision.getInstance().onDeviceTextRecognizer
         textRecognizer.processImage(firebaseVisionImage)
             .addOnSuccessListener {
+
                 val mutableImage = image.copy(Bitmap.Config.ARGB_8888, true)
 
                 recognizeText(it, mutableImage)
 
                 imageView.setImageBitmap(mutableImage)
                 hideProgress()
-                recyclerView.adapter?.notifyDataSetChanged()
+//                recyclerView.adapter?.notifyDataSetChanged()
             }
             .addOnFailureListener {
                 Toast.makeText(context, "There was some error", Toast.LENGTH_SHORT).show()
@@ -135,16 +135,52 @@ class GalleryFragment : Fragment() {
         if (result == null || image == null) {
             return Toast.makeText(context, "There was some error", Toast.LENGTH_SHORT).show()
         } else if (result.textBlocks.size == 0) {
-            Toast.makeText(context,"Gunakan landscape mode agar teks bisa terbaca", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,"Gunakan potrait mode agar teks bisa terbaca", Toast.LENGTH_SHORT).show()
             return
         }
 
-        var index = 0
-        for (block in result.textBlocks) {
-            for (line in block.lines) {
-                textRecognitionModels.add(TextModel(index++, line.text))
+        //test
+        val words = result.text.split("\n")
+        val res = mutableListOf<String>()
+        Log.e("TAG LIST STRING", words.toString())
+        for (word in words) {
+            Log.e("TAG STRING", word)
+//            word.matches(Regex("gol. darah|nik|kewarganegaraan|nama|status perkawinan|berlaku hingga|alamat|agama|tempat/tgl lahir|jenis kelamin|gol darah|rt/rw|kel|desa|kecamatan"))
+            word.replace(":","")
+            if (word.contains("NIK")) {
+                word.replace("NIK", "")
             }
+
+            if (word != "") {
+                res.add(word)
+            }
+            Log.e("TAG RES", res.toString())
+
+//            //REGEX for detecting a NIK
+//            if (word.replace(" ", "").matches(Regex("^(?:4[0-9]{12}(?:[0-9]{3})?|[25][1-7][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\\d{3})\\d{11})\$")))
+//                tvNIK.text = word
+//            //Find a better way to do this
+//            if (word.contains("/")) {
+//                for (year in word.split(" ")) {
+//                    if (year.contains("/"))
+//                        tvCardExpiry.text = year
+//                }
+//            }
         }
+        Log.e("TAG JADI", res.toString())
+        tvProvinsi.text = res[0]
+        tvKota.text = res[1]
+        tvNIK.text = res[2]
+//        tvNama.text = res[3]
+//        tvTgl.text = res[4]
+        //tets
+
+//        var index = 0
+//        for (block in result.textBlocks) {
+//            for (line in block.lines) {
+//                textRecognitionModels.add(TextModel(index++, line.text))
+//            }
+//        }
     }
 
     private fun showProgress() {
