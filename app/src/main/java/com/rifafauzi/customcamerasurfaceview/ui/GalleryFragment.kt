@@ -1,6 +1,8 @@
 package com.rifafauzi.customcamerasurfaceview.ui
 
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,15 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.text.FirebaseVisionText
 import com.rifafauzi.customcamerasurfaceview.R
-import com.rifafauzi.customcamerasurfaceview.adapter.TextAdapter
-import com.rifafauzi.customcamerasurfaceview.model.TextModel
 import kotlinx.android.synthetic.main.fragment_gallery.*
 
 /**
@@ -140,39 +138,31 @@ class GalleryFragment : Fragment() {
         }
 
         //test
-        val words = result.text.split("\n")
+        val lines = result.text.split("\n")
         val res = mutableListOf<String>()
-        Log.e("TAG LIST STRING", words.toString())
-        for (word in words) {
-            Log.e("TAG STRING", word)
-//            word.matches(Regex("gol. darah|nik|kewarganegaraan|nama|status perkawinan|berlaku hingga|alamat|agama|tempat/tgl lahir|jenis kelamin|gol darah|rt/rw|kel|desa|kecamatan"))
-            word.replace(":","")
-            if (word.contains("NIK")) {
-                word.replace("NIK", "")
+        for (line in lines) {
+            val stringRegex = line.replace(Regex("""(?i):|NIK|Nama|Tempat/Tgl Lahir|Jenis kelamin|Alamat|RT/RW|Kel/Desa|Kecamatan|Agama|Status Perkawinan|Pekerjaan|Kewarganegaraan|Berlaku Hingga|Gol\. Darah"""), "")
+            Log.e("TAG AFTER REGEX", stringRegex)
+            if (stringRegex != "") {
+                res.add(stringRegex)
             }
-
-            if (word != "") {
-                res.add(word)
-            }
-            Log.e("TAG RES", res.toString())
-
-//            //REGEX for detecting a NIK
-//            if (word.replace(" ", "").matches(Regex("^(?:4[0-9]{12}(?:[0-9]{3})?|[25][1-7][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\\d{3})\\d{11})\$")))
-//                tvNIK.text = word
-//            //Find a better way to do this
-//            if (word.contains("/")) {
-//                for (year in word.split(" ")) {
-//                    if (year.contains("/"))
-//                        tvCardExpiry.text = year
-//                }
-//            }
         }
-        Log.e("TAG JADI", res.toString())
         tvProvinsi.text = res[0]
         tvKota.text = res[1]
         tvNIK.text = res[2]
-//        tvNama.text = res[3]
-//        tvTgl.text = res[4]
+        tvNama.text = res[3]
+        tvTgl.text = res[4]
+        tvGender.text = res[5]
+        tvGol.text = res[6]
+        tvAddress.text = res[7]
+        tvRTRW.text = res[8]
+        tvKelDes.text = res[9]
+        tvKec.text = res[10]
+        tvAgama.text = res[11]
+        tvStatus.text = res[12]
+        tvJob.text = res[13]
+        tvWNI.text = res[14]
+        tvExpired.text = res[15]
         //tets
 
 //        var index = 0
