@@ -147,10 +147,11 @@ class CameraFragment : Fragment() {
         return stream.toByteArray()
     }
 
+    // Save the image cropped
     private fun saveImage(bytes: ByteArray) {
         val outStream: FileOutputStream
         try {
-            val fileName = "TUTORIALWING_" + System.currentTimeMillis() + ".jpg"
+            val fileName = "KTP" + System.currentTimeMillis() + ".jpg"
             val file = File(Environment.getExternalStorageDirectory(), fileName)
             outStream = FileOutputStream(file)
             outStream.write(bytes)
@@ -163,6 +164,7 @@ class CameraFragment : Fragment() {
     }
 
 
+    // Rotate the image from Landscape to Portrait
     private fun Bitmap.rotate(degree:Int):Bitmap{
         // Initialize a new matrix
         val matrix = Matrix()
@@ -221,7 +223,7 @@ class CameraFragment : Fragment() {
                         val bitmap = BitmapFactory.decodeFile(file.absolutePath)
                         val rotatedBitmap = bitmap.rotate(90)
                         val croppedImage = cropImage(rotatedBitmap, viewFinder, rectangle)
-                        saveImage(croppedImage)
+                        saveImage(croppedImage) //<-- Image cropped is save in device
                         requireActivity().runOnUiThread {
                             launchGalleryFragment(croppedImage)
                         }
