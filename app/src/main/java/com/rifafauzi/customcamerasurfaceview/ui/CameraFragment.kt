@@ -148,11 +148,11 @@ class CameraFragment : Fragment() {
     }
 
     // Save the image cropped
-    private fun saveImage(bytes: ByteArray) {
+    private fun saveImage(bytes: ByteArray) : String {
         val outStream: FileOutputStream
+        val fileName = "KTP" + System.currentTimeMillis() + ".jpg"
+        val file = File(Environment.getExternalStorageDirectory(), fileName)
         try {
-            val fileName = "KTP" + System.currentTimeMillis() + ".jpg"
-            val file = File(Environment.getExternalStorageDirectory(), fileName)
             outStream = FileOutputStream(file)
             outStream.write(bytes)
             outStream.close()
@@ -161,6 +161,8 @@ class CameraFragment : Fragment() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+
+        return file.absolutePath
     }
 
 
@@ -223,9 +225,9 @@ class CameraFragment : Fragment() {
                         val bitmap = BitmapFactory.decodeFile(file.absolutePath)
                         val rotatedBitmap = bitmap.rotate(90)
                         val croppedImage = cropImage(rotatedBitmap, viewFinder, rectangle)
-                        saveImage(croppedImage) //<-- Image cropped is save in device
+                        val path = saveImage(croppedImage) //<-- Image cropped is save in device
                         requireActivity().runOnUiThread {
-                            launchGalleryFragment(croppedImage)
+                            launchGalleryFragment(path)
                         }
                     }
 
@@ -260,10 +262,8 @@ class CameraFragment : Fragment() {
         return analysis
     }
 
-    private fun launchGalleryFragment(byteArray: ByteArray) {
-        val charset = Charsets.UTF_8
-        val image = byteArray.toString(charset)
-        val action = CameraFragmentDirections.actionLaunchGalleryFragment(image)
+    private fun launchGalleryFragment(path: String) {
+        val action = CameraFragmentDirections.actionLaunchGalleryFragment(path)
         findNavController().navigate(action)
     }
 

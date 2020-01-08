@@ -49,9 +49,7 @@ class GalleryFragment : Fragment() {
             image = safeArgs.data
         }
 
-        val charset = Charsets.UTF_8
-        val byteArray = image.toByteArray(charset)
-        val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        val bitmap = BitmapFactory.decodeFile(image)
 
         Glide.with(activity!!)
             .load(bitmap)
