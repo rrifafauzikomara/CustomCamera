@@ -1,8 +1,8 @@
 package com.rifafauzi.customcamerasurfaceview.ui
 
 import android.graphics.Bitmap
+import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,18 +17,17 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText
 import com.rifafauzi.customcamerasurfaceview.R
 import kotlinx.android.synthetic.main.fragment_gallery.*
 
+
 /**
  * A simple [Fragment] subclass.
  */
 class GalleryFragment : Fragment() {
 
     private lateinit var imageView: ImageView
-//    private lateinit var recyclerView: RecyclerView
     private lateinit var btnProcess: FrameLayout
     private lateinit var tvButton: TextView
     private lateinit var progressBar: ProgressBar
-
-//    private val textRecognitionModels = ArrayList<TextModel>()
+    private lateinit var image: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,60 +41,27 @@ class GalleryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         imageView = view.findViewById(R.id.img)
-//        recyclerView = view.findViewById(R.id.recycler_view)
         btnProcess = view.findViewById(R.id.btnRecognition)
         tvButton = view.findViewById(R.id.btnText)
         progressBar = view.findViewById(R.id.btnProgress)
 
-        val imageFilePath = GalleryFragmentArgs.fromBundle(arguments!!).data
-        val bitmap = BitmapFactory.decodeFile(imageFilePath)
-        val rotatedBitmap = bitmap.rotate(90)
-
-        if (imageFilePath.isBlank()) {
-            Log.i(
-                "GalleryFragment",
-                "Image is Null or Empty"
-            )
-        } else {
-            Glide.with(activity!!)
-                .load(rotatedBitmap)
-                .into(imageView)
+        arguments?.let {
+            val safeArgs = GalleryFragmentArgs.fromBundle(it)
+            image = safeArgs.data
         }
+
+        val charset = Charsets.UTF_8
+        val byteArray = image.toByteArray(charset)
+        val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+
+        Glide.with(activity!!)
+            .load(bitmap)
+            .into(imageView)
 
         btnProcess.setOnClickListener {
-            analyzeImage(rotatedBitmap)
+            analyzeImage(bitmap)
         }
 
-//        recyclerView.layoutManager = LinearLayoutManager(context)
-//        recyclerView.adapter = TextAdapter(context!!, textRecognitionModels)
-
-    }
-
-    private fun Bitmap.rotate(degree:Int):Bitmap{
-        // Initialize a new matrix
-        val matrix = Matrix()
-
-        // Rotate the bitmap
-        matrix.postRotate(degree.toFloat())
-
-        // Resize the bitmap
-        val scaledBitmap = Bitmap.createScaledBitmap(
-            this,
-            width,
-            height,
-            true
-        )
-
-        // Create and return the rotated bitmap
-        return Bitmap.createBitmap(
-            scaledBitmap,
-            0,
-            0,
-            scaledBitmap.width,
-            scaledBitmap.height,
-            matrix,
-            true
-        )
     }
 
     private fun analyzeImage(image: Bitmap?) {
@@ -104,8 +70,6 @@ class GalleryFragment : Fragment() {
             return
         }
 
-//        textRecognitionModels.clear()
-//        recyclerView.adapter?.notifyDataSetChanged()
         showProgress()
 
         val firebaseVisionImage = FirebaseVisionImage.fromBitmap(image)
@@ -119,7 +83,6 @@ class GalleryFragment : Fragment() {
 
                 imageView.setImageBitmap(mutableImage)
                 hideProgress()
-//                recyclerView.adapter?.notifyDataSetChanged()
             }
             .addOnFailureListener {
                 Toast.makeText(context, "There was some error", Toast.LENGTH_SHORT).show()
@@ -137,7 +100,6 @@ class GalleryFragment : Fragment() {
             return
         }
 
-        //test
         val lines = result.text.split("\n")
         val res = mutableListOf<String>()
         for (line in lines) {
@@ -164,14 +126,7 @@ class GalleryFragment : Fragment() {
         tvJob.text = res[13]
         tvWNI.text = res[14]
         tvExpired.text = res[15]
-        //tets
 
-//        var index = 0
-//        for (block in result.textBlocks) {
-//            for (line in block.lines) {
-//                textRecognitionModels.add(TextModel(index++, line.text))
-//            }
-//        }
     }
 
     private fun showProgress() {

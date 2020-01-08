@@ -42,7 +42,7 @@ class SplashFragment : Fragment() {
 
     private fun requestReadPermissions() {
         Dexter.withActivity(activity)
-            .withPermissions(Manifest.permission.CAMERA)
+            .withPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             .withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport) {
                     if (report.areAllPermissionsGranted()) {

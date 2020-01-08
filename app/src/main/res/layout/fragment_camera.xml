@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
+        android:id="@+id/rectangle"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_margin="16dp"

@@ -1,11 +1,13 @@
 package com.rifafauzi.customcamerasurfaceview.ui
 
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.util.Size
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Surface
 import android.view.View
@@ -15,19 +17,23 @@ import androidx.camera.core.CameraX
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.rifafauzi.customcamerasurfaceview.R
 import com.rifafauzi.customcamerasurfaceview.utils.FileCreator
 import com.rifafauzi.customcamerasurfaceview.utils.FileCreator.JPEG_FORMAT
 import com.rifafauzi.customcamerasurfaceview.utils.UseCaseConfigBuilder
 import kotlinx.android.synthetic.main.fragment_camera.*
-import java.io.File
+import java.io.*
 import java.util.concurrent.Executors
+
 
 /**
  * A simple [Fragment] subclass.
  */
 class CameraFragment : Fragment() {
+
+    private lateinit var rectangle: View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,6 +45,9 @@ class CameraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        rectangle = view.findViewById(R.id.rectangle)
+
         viewFinder.post { setupCamera() }
     }
 
@@ -103,6 +112,84 @@ class CameraFragment : Fragment() {
         return -rotationDegrees.toFloat()
     }
 
+    /**
+     * Crop a image taking a reference a view parent like a frame, and a view child like final
+     * reference
+     *
+     * @param bitmap image to crop
+     * @param frame where the image is set it
+     * @param reference frame to take reference for crop the image
+     * @return image already cropped
+     */
+    private fun cropImage(bitmap: Bitmap, frame: View, reference: View): ByteArray {
+        val heightOriginal = frame.height
+        val widthOriginal = frame.width
+        val heightFrame = reference.height
+        val widthFrame = reference.width
+        val leftFrame = reference.left
+        val topFrame = reference.top
+        val heightReal = bitmap.height
+        val widthReal = bitmap.width
+        val widthFinal = widthFrame * widthReal / widthOriginal
+        val heightFinal = heightFrame * heightReal / heightOriginal
+        val leftFinal = leftFrame * widthReal / widthOriginal
+        val topFinal = topFrame * heightReal / heightOriginal
+        val bitmapFinal = Bitmap.createBitmap(
+            bitmap,
+            leftFinal, topFinal, widthFinal, heightFinal
+        )
+        val stream = ByteArrayOutputStream()
+        bitmapFinal.compress(
+            Bitmap.CompressFormat.JPEG,
+            100,
+            stream
+        ) //100 is the best quality possibe
+        return stream.toByteArray()
+    }
+
+    private fun saveImage(bytes: ByteArray) {
+        val outStream: FileOutputStream
+        try {
+            val fileName = "TUTORIALWING_" + System.currentTimeMillis() + ".jpg"
+            val file = File(Environment.getExternalStorageDirectory(), fileName)
+            outStream = FileOutputStream(file)
+            outStream.write(bytes)
+            outStream.close()
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+
+    private fun Bitmap.rotate(degree:Int):Bitmap{
+        // Initialize a new matrix
+        val matrix = Matrix()
+
+        // Rotate the bitmap
+        matrix.postRotate(degree.toFloat())
+
+        // Resize the bitmap
+        val scaledBitmap = Bitmap.createScaledBitmap(
+            this,
+            width,
+            height,
+            true
+        )
+
+        // Create and return the rotated bitmap
+        return Bitmap.createBitmap(
+            scaledBitmap,
+            0,
+            0,
+            scaledBitmap.width,
+            scaledBitmap.height,
+            matrix,
+            true
+        )
+    }
+
     private fun getDisplayScalingFactors(textureSize: Size): Pair<Float, Float> {
         val cameraPreviewRation = textureSize.height / textureSize.width.toFloat()
         val scaledWidth: Int
@@ -131,8 +218,12 @@ class CameraFragment : Fragment() {
                 Executors.newSingleThreadExecutor(),
                 object : ImageCapture.OnImageSavedListener {
                     override fun onImageSaved(file: File) {
+                        val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+                        val rotatedBitmap = bitmap.rotate(90)
+                        val croppedImage = cropImage(rotatedBitmap, viewFinder, rectangle)
+                        saveImage(croppedImage)
                         requireActivity().runOnUiThread {
-                            launchGalleryFragment(file.absolutePath)
+                            launchGalleryFragment(croppedImage)
                         }
                     }
 
@@ -167,8 +258,10 @@ class CameraFragment : Fragment() {
         return analysis
     }
 
-    private fun launchGalleryFragment(path: String) {
-        val action = CameraFragmentDirections.actionLaunchGalleryFragment(path)
+    private fun launchGalleryFragment(byteArray: ByteArray) {
+        val charset = Charsets.UTF_8
+        val image = byteArray.toString(charset)
+        val action = CameraFragmentDirections.actionLaunchGalleryFragment(image)
         findNavController().navigate(action)
     }
 
