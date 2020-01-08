@@ -141,10 +141,11 @@ class GalleryFragment : Fragment() {
         val lines = result.text.split("\n")
         val res = mutableListOf<String>()
         for (line in lines) {
-            val stringRegex = line.replace(Regex("""(?i):|NIK|Nama|Tempat/Tgl Lahir|Jenis kelamin|Alamat|RT/RW|Kel/Desa|Kecamatan|Agama|Status Perkawinan|Pekerjaan|Kewarganegaraan|Berlaku Hingga|Gol\. Darah"""), "")
-            Log.e("TAG AFTER REGEX", stringRegex)
-            if (stringRegex != "") {
-                res.add(stringRegex)
+            val stringRegex = line.replace(Regex("""(?i)Gol\. Darah|NIK|Nama|Tempat/Tgl Lahir|Jenis kelamin|Alamat|RT/RW|Kel/Desa|Kecamatan|Agama|Status Perkawinan|Pekerjaan|Kewarganegaraan|Berlaku Hingga|Gol. Darah|TempatTglLahir|TempatTgl Lahir|Gol Darah|RTRW|Kewarganegataan"""), "")
+            val replace = stringRegex.replace(":", "")
+            Log.e("TAG AFTER REGEX", replace)
+            if (replace != "") {
+                res.add(replace)
             }
         }
         tvProvinsi.text = res[0]
