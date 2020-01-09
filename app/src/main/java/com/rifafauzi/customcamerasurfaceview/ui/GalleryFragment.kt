@@ -1,7 +1,6 @@
 package com.rifafauzi.customcamerasurfaceview.ui
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.*
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,7 +14,6 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.text.FirebaseVisionText
 import com.rifafauzi.customcamerasurfaceview.R
 import kotlinx.android.synthetic.main.fragment_gallery.*
-
 
 /**
  * A simple [Fragment] subclass.
@@ -51,9 +49,11 @@ class GalleryFragment : Fragment() {
 
         val bitmap = BitmapFactory.decodeFile(image)
 
-        Glide.with(activity!!)
-            .load(bitmap)
-            .into(imageView)
+        activity?.let {
+            Glide.with(it)
+                .load(bitmap)
+                .into(imageView)
+        }
 
         btnProcess.setOnClickListener {
             analyzeImage(bitmap)
@@ -102,7 +102,7 @@ class GalleryFragment : Fragment() {
         for (line in lines) {
             val stringRegex = line.replace(
                 Regex(
-                    """(?i)Gol\. Darah|NIK|Nama|Tempat/Tgl Lahir|Jenis kelamin|Alamat|RT/RW|Kel/Desa|Kecamatan|Agama|Status Perkawinan|Pekerjaan|Kewarganegaraan|Berlaku Hingga|Gol. Darah|TempatTglLahir|TempatTgl Lahir|Gol Darah|RTRW|Kewarganegataan|NZK|Tempat glahir|Jenis keiamn|GoL Daah|Tempat Tglahit|Jenis keiami|Gol Daah|Tempet TglLahir|Jenis kelemin|GoL Da ah|RIRW|KelOes|TempatTgiLahir|Jenis keilamis|Alamal|Goi Dazah|RT/BW|Kel/Oesa"""),
+                    """(?i)Gol\. Darah|NIK|Nama|Tempat/Tgl Lahir|Jenis kelamin|Alamat|RT/RW|Kel/Desa|Kecamatan|Agama|Status Perkawinan|Pekerjaan|Kewarganegaraan|Berlaku Hingga|Gol. Darah|TempatTglLahir|TempatTgl Lahir|Gol Darah|RTRW|Kewarganegataan|NZK|Tempat glahir|Jenis keiamn|GoL Daah|Tempat Tglahit|Jenis keiami|Gol Daah|Tempet TglLahir|Jenis kelemin|GoL Da ah|RIRW|KelOes|TempatTgiLahir|Jenis keilamis|Alamal|Goi Dazah|RT/BW|Kel/Oesa|Tempat/ TglLahir|Tempat/TglLahir|R1/RW|R1RW"""),
                 ""
             )
             val replace = stringRegex.replace(":", "")
@@ -122,6 +122,23 @@ class GalleryFragment : Fragment() {
             Log.e("TAG AFTER REGEX", replace)
             if (replace != "") {
                 res.add(replace)
+            }
+        }
+
+        val canvas = Canvas(image)
+        val rectPaint = Paint()
+        rectPaint.color = Color.RED
+        rectPaint.style = Paint.Style.STROKE
+        rectPaint.strokeWidth = 4F
+        val textPaint = Paint()
+        textPaint.color = Color.RED
+        textPaint.textSize = 40F
+
+        val index = 0
+        for (block in result.textBlocks) {
+            for (line in block.lines) {
+                canvas.drawRect(line.boundingBox!!, rectPaint)
+                canvas.drawText(index.toString(), line.cornerPoints!![2].x.toFloat(), line.cornerPoints!![2].y.toFloat(), textPaint)
             }
         }
 

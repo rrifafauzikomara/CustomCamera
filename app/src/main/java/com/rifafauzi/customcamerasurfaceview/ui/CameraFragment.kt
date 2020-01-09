@@ -28,7 +28,6 @@ import kotlinx.android.synthetic.main.fragment_camera.*
 import java.io.*
 import java.util.concurrent.Executors
 
-
 /**
  * A simple [Fragment] subclass.
  */
