@@ -1,6 +1,5 @@
 package com.rifafauzi.customcamerasurfaceview.ui
 
-
 import android.Manifest
 import android.os.Bundle
 import android.os.Handler

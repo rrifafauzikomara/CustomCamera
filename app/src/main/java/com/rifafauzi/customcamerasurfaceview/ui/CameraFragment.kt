@@ -1,6 +1,5 @@
 package com.rifafauzi.customcamerasurfaceview.ui
 
-
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
