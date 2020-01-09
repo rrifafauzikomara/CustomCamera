@@ -4,6 +4,7 @@ package com.rifafauzi.customcamerasurfaceview.ui
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.media.MediaScannerConnection
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -151,10 +152,22 @@ class CameraFragment : Fragment() {
     private fun saveImage(bytes: ByteArray) : String {
         val outStream: FileOutputStream
         val fileName = "KTP" + System.currentTimeMillis() + ".jpg"
-        val file = File(Environment.getExternalStorageDirectory(), fileName)
+        val directoryName = File(Environment.getExternalStorageDirectory().toString() + IMAGE_DIRECTORY)
+        val file = File(directoryName, fileName)
+
+        if (!directoryName.exists()) {
+            directoryName.mkdirs()
+        }
+
         try {
+            file.createNewFile()
             outStream = FileOutputStream(file)
             outStream.write(bytes)
+            MediaScannerConnection.scanFile(
+                context,
+                arrayOf(file.path),
+                arrayOf("image/jpeg"), null
+            )
             outStream.close()
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
@@ -265,6 +278,10 @@ class CameraFragment : Fragment() {
     private fun launchGalleryFragment(path: String) {
         val action = CameraFragmentDirections.actionLaunchGalleryFragment(path)
         findNavController().navigate(action)
+    }
+
+    companion object {
+        private const val IMAGE_DIRECTORY = "/CustomImage"
     }
 
 }

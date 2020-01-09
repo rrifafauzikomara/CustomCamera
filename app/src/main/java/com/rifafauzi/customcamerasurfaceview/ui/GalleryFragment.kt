@@ -100,29 +100,51 @@ class GalleryFragment : Fragment() {
         val lines = result.text.split("\n")
         val res = mutableListOf<String>()
         for (line in lines) {
-            val stringRegex = line.replace(Regex("""(?i)Gol\. Darah|NIK|Nama|Tempat/Tgl Lahir|Jenis kelamin|Alamat|RT/RW|Kel/Desa|Kecamatan|Agama|Status Perkawinan|Pekerjaan|Kewarganegaraan|Berlaku Hingga|Gol. Darah|TempatTglLahir|TempatTgl Lahir|Gol Darah|RTRW|Kewarganegataan"""), "")
+            val stringRegex = line.replace(
+                Regex(
+                    """(?i)Gol\. Darah|NIK|Nama|Tempat/Tgl Lahir|Jenis kelamin|Alamat|RT/RW|Kel/Desa|Kecamatan|Agama|Status Perkawinan|Pekerjaan|Kewarganegaraan|Berlaku Hingga|Gol. Darah|TempatTglLahir|TempatTgl Lahir|Gol Darah|RTRW|Kewarganegataan|NZK|Tempat glahir|Jenis keiamn|GoL Daah|Tempat Tglahit|Jenis keiami|Gol Daah|Tempet TglLahir|Jenis kelemin|GoL Da ah|RIRW|KelOes|TempatTgiLahir|Jenis keilamis|Alamal|Goi Dazah|RT/BW|Kel/Oesa"""),
+                ""
+            )
             val replace = stringRegex.replace(":", "")
+//                .replace("Gol. Darah", "")
+//                .replace("TempatTglLahir", "")
+//                .replace("TempatTgl Lahir", "")
+//                .replace("Gol Darah", "")
+//                .replace("RTRW", "")
+//                .replace("Kewarganegataan", "")
+//                .replace("NZK","")
+//                .replace("Tempat glahir", "")
+//                .replace("Jenis keiamn","")
+//                .replace("GoL Daah","")
+//                .replace("Tempat Tglahit","")
+//                .replace("Jenis keiami","")
+//                .replace("Gol Daah", "")
             Log.e("TAG AFTER REGEX", replace)
             if (replace != "") {
                 res.add(replace)
             }
         }
-        tvProvinsi.text = res[0]
-        tvKota.text = res[1]
-        tvNIK.text = res[2]
-        tvNama.text = res[3]
-        tvTgl.text = res[4]
-        tvGender.text = res[5]
-        tvGol.text = res[6]
-        tvAddress.text = res[7]
-        tvRTRW.text = res[8]
-        tvKelDes.text = res[9]
-        tvKec.text = res[10]
-        tvAgama.text = res[11]
-        tvStatus.text = res[12]
-        tvJob.text = res[13]
-        tvWNI.text = res[14]
-        tvExpired.text = res[15]
+
+        if (res.size < 16) {
+            Toast.makeText(context, "Gambar tidak sesuai", Toast.LENGTH_SHORT).show()
+        } else {
+            tvProvinsi.text = res[0]
+            tvKota.text = res[1]
+            tvNIK.text = res[2]
+            tvNama.text = res[3]
+            tvTgl.text = res[4]
+            tvGender.text = res[5]
+            tvGol.text = res[6]
+            tvAddress.text = res[7]
+            tvRTRW.text = res[8]
+            tvKelDes.text = res[9]
+            tvKec.text = res[10]
+            tvAgama.text = res[11]
+            tvStatus.text = res[12]
+            tvJob.text = res[13]
+            tvWNI.text = res[14]
+            tvExpired.text = res[15]
+        }
 
     }
 
