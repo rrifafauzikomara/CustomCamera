@@ -33,6 +33,7 @@ import java.util.concurrent.Executors
 class CameraFragment : Fragment() {
 
     private lateinit var rectangle: View
+    private var preview: Preview? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,13 +61,13 @@ class CameraFragment : Fragment() {
         )
     }
 
-    private fun buildPreviewUseCase(): Preview {
-        val preview = Preview(
+    private fun buildPreviewUseCase(): Preview? {
+        preview = Preview(
             UseCaseConfigBuilder.buildPreviewConfig(
                 viewFinder.display
             )
         )
-        preview.setOnPreviewOutputUpdateListener { previewOutput ->
+        preview?.setOnPreviewOutputUpdateListener { previewOutput ->
             updateViewFinderWithPreview(previewOutput)
             correctPreviewOutputForDisplay(previewOutput.textureSize)
         }

@@ -90,6 +90,8 @@ class GalleryFragment : Fragment() {
 
     private fun recognizeText(result: FirebaseVisionText?, image: Bitmap?) {
 
+        val res = mutableListOf<String>()
+
         if (result == null || image == null) {
             return Toast.makeText(context, "There was some error", Toast.LENGTH_SHORT).show()
         } else if (result.textBlocks.size == 0) {
@@ -97,12 +99,11 @@ class GalleryFragment : Fragment() {
             return
         }
 
-        val lines = result.text.split("\n")
-        val res = mutableListOf<String>()
-        for (line in lines) {
-            val stringRegex = line.replace(
+        val words = result.text.split("\n")
+        for (word in words) {
+            val stringRegex = word.replace(
                 Regex(
-                    """(?i)Gol\. Darah|NIK|Nama|Tempat/Tgl Lahir|Jenis kelamin|Alamat|RT/RW|Kel/Desa|Kecamatan|Agama|Status Perkawinan|Pekerjaan|Kewarganegaraan|Berlaku Hingga|Gol. Darah|TempatTglLahir|TempatTgl Lahir|Gol Darah|RTRW|Kewarganegataan|NZK|Tempat glahir|Jenis keiamn|GoL Daah|Tempat Tglahit|Jenis keiami|Gol Daah|Tempet TglLahir|Jenis kelemin|GoL Da ah|RIRW|KelOes|TempatTgiLahir|Jenis keilamis|Alamal|Goi Dazah|RT/BW|Kel/Oesa|Tempat/ TglLahir|Tempat/TglLahir|R1/RW|R1RW"""),
+                    """(?i)Gol\. Darah|NIK|Nama|Tempat/Tgl Lahir|Jenis kelamin|Alamat|RT/RW|Kel/Desa|Kecamatan|Agama|Status Perkawinan|Pekerjaan|Kewarganegaraan|Berlaku Hingga|Gol. Darah|TempatTglLahir|TempatTgl Lahir|Gol Darah|RTRW|Kewarganegataan|NZK|Tempat glahir|Jenis keiamn|GoL Daah|Tempat Tglahit|Jenis keiami|Gol Daah|Tempet TglLahir|Jenis kelemin|GoL Da ah|RIRW|KelOes|TempatTgiLahir|Jenis keilamis|Alamal|Goi Dazah|RT/BW|Kel/Oesa|Tempat/ TglLahir|Tempat/TglLahir|R1/RW|R1RW|Tempat Tgl Lahir|GolDarah|KelDesa|Tempat/Tgi Lahir|KevDesa|Aiamat|Ke/Desa|Tempat TglLahir|KeiDesaa"""),
                 ""
             )
             val replace = stringRegex.replace(":", "")
@@ -122,23 +123,6 @@ class GalleryFragment : Fragment() {
             Log.e("TAG AFTER REGEX", replace)
             if (replace != "") {
                 res.add(replace)
-            }
-        }
-
-        val canvas = Canvas(image)
-        val rectPaint = Paint()
-        rectPaint.color = Color.RED
-        rectPaint.style = Paint.Style.STROKE
-        rectPaint.strokeWidth = 4F
-        val textPaint = Paint()
-        textPaint.color = Color.RED
-        textPaint.textSize = 40F
-
-        val index = 0
-        for (block in result.textBlocks) {
-            for (line in block.lines) {
-                canvas.drawRect(line.boundingBox!!, rectPaint)
-                canvas.drawText(index.toString(), line.cornerPoints!![2].x.toFloat(), line.cornerPoints!![2].y.toFloat(), textPaint)
             }
         }
 
