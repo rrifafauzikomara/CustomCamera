@@ -120,7 +120,6 @@ class GalleryFragment : Fragment() {
 //                .replace("Tempat Tglahit","")
 //                .replace("Jenis keiami","")
 //                .replace("Gol Daah", "")
-            Log.e("TAG AFTER REGEX", replace)
             if (replace != "") {
                 res.add(replace)
             }

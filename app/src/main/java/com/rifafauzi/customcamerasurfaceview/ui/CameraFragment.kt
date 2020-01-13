@@ -17,6 +17,7 @@ import androidx.camera.core.CameraX
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.rifafauzi.customcamerasurfaceview.R
@@ -25,6 +26,7 @@ import com.rifafauzi.customcamerasurfaceview.utils.FileCreator.JPEG_FORMAT
 import com.rifafauzi.customcamerasurfaceview.utils.UseCaseConfigBuilder
 import kotlinx.android.synthetic.main.fragment_camera.*
 import java.io.*
+import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 /**
@@ -34,6 +36,12 @@ class CameraFragment : Fragment() {
 
     private lateinit var rectangle: View
     private var preview: Preview? = null
+    private lateinit var mainExecutor: Executor
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mainExecutor = ContextCompat.getMainExecutor(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -231,9 +239,11 @@ class CameraFragment : Fragment() {
         cameraCaptureImageButton.setOnClickListener {
             capture.takePicture(
                 FileCreator.createTempFile(JPEG_FORMAT),
-                Executors.newSingleThreadExecutor(),
+                mainExecutor,
+//                Executors.newSingleThreadExecutor(),
                 object : ImageCapture.OnImageSavedListener {
                     override fun onImageSaved(file: File) {
+                        CameraX.unbind(preview)
                         val bitmap = BitmapFactory.decodeFile(file.absolutePath)
                         val rotatedBitmap = bitmap.rotate(90)
                         val croppedImage = cropImage(rotatedBitmap, viewFinder, rectangle)
@@ -250,7 +260,6 @@ class CameraFragment : Fragment() {
                     ) {
                         Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_LONG)
                             .show()
-                        Log.e("CameraFragment", "Capture error $imageCaptureError: $message", cause)
                     }
                 })
         }
