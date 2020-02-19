@@ -151,7 +151,7 @@ class CameraFragment : Fragment() {
             Bitmap.CompressFormat.JPEG,
             100,
             stream
-        ) //100 is the best quality possibe
+        ) //100 is the best quality possible
         return stream.toByteArray()
     }
 
@@ -240,28 +240,23 @@ class CameraFragment : Fragment() {
             capture.takePicture(
                 FileCreator.createTempFile(JPEG_FORMAT),
                 mainExecutor,
-//                Executors.newSingleThreadExecutor(),
                 object : ImageCapture.OnImageSavedListener {
                     override fun onImageSaved(file: File) {
                         CameraX.unbind(preview)
                         val bitmap = BitmapFactory.decodeFile(file.absolutePath)
                         val rotatedBitmap = bitmap.rotate(90)
                         val croppedImage = cropImage(rotatedBitmap, viewFinder, rectangle)
-                        val path = saveImage(croppedImage) //<-- Image cropped is save in device
+                        val path = saveImage(croppedImage)
                         requireActivity().runOnUiThread {
                             launchGalleryFragment(path)
                         }
                     }
 
-                    override fun onError(
-                        imageCaptureError: ImageCapture.ImageCaptureError,
-                        message: String,
-                        cause: Throwable?
-                    ) {
-                        Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_LONG)
-                            .show()
+                    override fun onError(imageCaptureError: ImageCapture.ImageCaptureError, message: String, cause: Throwable?) {
+                        Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_LONG).show()
                     }
-                })
+                }
+            )
         }
         return capture
     }

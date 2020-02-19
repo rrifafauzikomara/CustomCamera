@@ -1,8 +1,8 @@
 package com.rifafauzi.customcamerasurfaceview.ui
 
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,8 +21,6 @@ import kotlinx.android.synthetic.main.fragment_gallery.*
 class GalleryFragment : Fragment() {
 
     private lateinit var imageView: ImageView
-    private lateinit var btnProcess: FrameLayout
-    private lateinit var tvButton: TextView
     private lateinit var progressBar: ProgressBar
     private lateinit var image: String
 
@@ -38,8 +36,6 @@ class GalleryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         imageView = view.findViewById(R.id.img)
-        btnProcess = view.findViewById(R.id.btnRecognition)
-        tvButton = view.findViewById(R.id.btnText)
         progressBar = view.findViewById(R.id.btnProgress)
 
         arguments?.let {
@@ -55,9 +51,7 @@ class GalleryFragment : Fragment() {
                 .into(imageView)
         }
 
-        btnProcess.setOnClickListener {
-            analyzeImage(bitmap)
-        }
+        analyzeImage(bitmap)
 
     }
 
@@ -149,12 +143,10 @@ class GalleryFragment : Fragment() {
     }
 
     private fun showProgress() {
-        tvButton.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
     }
 
     private fun hideProgress() {
-        tvButton.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
     }
 
