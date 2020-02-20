@@ -1,4 +1,4 @@
-package com.rifafauzi.customcamerasurfaceview.ui
+package com.rifafauzi.customcamerasurfaceview.ui.camera
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -279,7 +279,10 @@ class CameraFragment : Fragment() {
     }
 
     private fun launchGalleryFragment(path: String) {
-        val action = CameraFragmentDirections.actionLaunchGalleryFragment(path)
+        val action =
+            CameraFragmentDirections.actionLaunchGalleryFragment(
+                path
+            )
         findNavController().navigate(action)
     }
 

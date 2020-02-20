@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.rifafauzi.customcamerasurfaceview.ui.SplashFragment"
+        android:name="com.rifafauzi.customcamerasurfaceview.ui.splash.SplashFragment"
         tools:layout="@layout/fragment_splash">
         <action
             android:id="@+id/actionLaunchCameraFragment"
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/cameraFragment"
-        android:name="com.rifafauzi.customcamerasurfaceview.ui.CameraFragment"
+        android:name="com.rifafauzi.customcamerasurfaceview.ui.camera.CameraFragment"
         tools:layout="@layout/fragment_camera">
         <action
             android:id="@+id/actionLaunchGalleryFragment"
@@ -35,7 +35,7 @@
     <fragment
         android:id="@+id/galleryFragment"
         android:label="Gallery"
-        android:name="com.rifafauzi.customcamerasurfaceview.ui.GalleryFragment"
+        android:name="com.rifafauzi.customcamerasurfaceview.ui.gallery.GalleryFragment"
         tools:layout="@layout/fragment_gallery">
 
         <argument

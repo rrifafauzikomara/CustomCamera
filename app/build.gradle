@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 // for navigation
 apply plugin: 'androidx.navigation.safeargs'
@@ -26,6 +27,9 @@ android {
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
         }
+    }
+    dataBinding {
+        enabled = true
     }
 }
 
@@ -55,6 +59,17 @@ dependencies {
 
     // dexter permission
     implementation "com.karumi:dexter:$dexterVersion"
+
+    // Dependencies for MVVM and LiveData
+    implementation "androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$archLifecycleVersion"
+    kapt "androidx.lifecycle:lifecycle-compiler:$archLifecycleVersion"
+
+    // Dependencies for Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$logingVersion"
 }
 
 apply plugin: 'com.google.gms.google-services'

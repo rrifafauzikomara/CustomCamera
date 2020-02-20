@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Custom Camera</string>
+    <string name="no_internet_connection">Tidak ada koneksi internet. Mohon mengecek kembali koneksi internet Anda</string>
+    <string name="timeout">Request timeout, Please make sure you have stable internet connection</string>
+    <string name="unknown_error">Sorry. There is unknown error on our end.\nPlease try again later</string>
 </resources>

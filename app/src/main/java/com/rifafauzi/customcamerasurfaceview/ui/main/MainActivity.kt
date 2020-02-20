@@ -1,4 +1,4 @@
-package com.rifafauzi.customcamerasurfaceview
+package com.rifafauzi.customcamerasurfaceview.ui.main
 
 import android.os.Bundle
 import android.view.View
@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.rifafauzi.customcamerasurfaceview.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,7 +25,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initMain() {
-        navController = Navigation.findNavController(this, R.id.mainContent)
+        navController = Navigation.findNavController(this,
+            R.id.mainContent
+        )
         toolbar = findViewById(R.id.mainToolbar)
     }
 

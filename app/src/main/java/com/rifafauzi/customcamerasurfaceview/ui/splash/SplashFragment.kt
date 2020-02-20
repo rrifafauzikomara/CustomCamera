@@ -1,4 +1,4 @@
-package com.rifafauzi.customcamerasurfaceview.ui
+package com.rifafauzi.customcamerasurfaceview.ui.splash
 
 import android.Manifest
 import android.os.Bundle
