@@ -1,4 +1,4 @@
-package com.rifafauzi.customcamerasurfaceview.utils
+package com.rifafauzi.customcamera.utils
 
 /**
  * Created by rrifafauzikomara on 2019-11-20.

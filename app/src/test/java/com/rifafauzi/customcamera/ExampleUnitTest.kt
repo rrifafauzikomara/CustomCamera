@@ -1,4 +1,4 @@
-package com.rifafauzi.customcamerasurfaceview
+package com.rifafauzi.customcamera
 
 import org.junit.Test
 

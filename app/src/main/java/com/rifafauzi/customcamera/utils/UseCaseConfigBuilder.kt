@@ -1,4 +1,4 @@
-package com.rifafauzi.customcamerasurfaceview.utils
+package com.rifafauzi.customcamera.utils
 
 import android.util.DisplayMetrics
 import android.util.Size

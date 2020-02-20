@@ -1,4 +1,4 @@
-package com.rifafauzi.customcamerasurfaceview.common
+package com.rifafauzi.customcamera.common
 
 import androidx.annotation.StringRes
 

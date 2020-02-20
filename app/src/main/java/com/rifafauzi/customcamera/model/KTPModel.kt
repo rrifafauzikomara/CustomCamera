@@ -1,4 +1,4 @@
-package com.rifafauzi.customcamerasurfaceview.model
+package com.rifafauzi.customcamera.model
 
 import com.google.gson.annotations.SerializedName
 

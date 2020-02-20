@@ -1,6 +1,6 @@
-package com.rifafauzi.customcamerasurfaceview.api
+package com.rifafauzi.customcamera.api
 
-import com.rifafauzi.customcamerasurfaceview.BuildConfig
+import com.rifafauzi.customcamera.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

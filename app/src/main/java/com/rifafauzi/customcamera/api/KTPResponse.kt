@@ -1,7 +1,7 @@
-package com.rifafauzi.customcamerasurfaceview.api
+package com.rifafauzi.customcamera.api
 
 import com.google.gson.annotations.SerializedName
-import com.rifafauzi.customcamerasurfaceview.model.KTPModel
+import com.rifafauzi.customcamera.model.KTPModel
 
 /**
  * Created by rrifafauzikomara on 2020-02-19.

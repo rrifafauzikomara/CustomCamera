@@ -8,17 +8,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:32602638734:android:953e048ad77581e5683cdf",
+        "mobilesdk_app_id": "1:32602638734:android:afa6d3717eec3b4e683cdf",
         "android_client_info": {
-          "package_name": "com.rifafauzi.customcamerasurfaceview"
+          "package_name": "com.rifafauzi.customcamera"
         }
       },
       "oauth_client": [
         {
-          "client_id": "32602638734-5n0cc09vceul1dbcpuqlnjqdn5ruokhd.apps.googleusercontent.com",
+          "client_id": "32602638734-78lfnivrlv5j8flcu4gns2jt2ojmiggf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.rifafauzi.customcamerasurfaceview",
+            "package_name": "com.rifafauzi.customcamera",
             "certificate_hash": "58739429656a05415768862cb07043cdfc500d20"
           }
         },

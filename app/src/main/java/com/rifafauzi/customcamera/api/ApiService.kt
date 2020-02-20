@@ -1,4 +1,4 @@
-package com.rifafauzi.customcamerasurfaceview.api
+package com.rifafauzi.customcamera.api
 
 import retrofit2.http.GET
 import retrofit2.http.Query

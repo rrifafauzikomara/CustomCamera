@@ -1,4 +1,4 @@
-package com.rifafauzi.customcamerasurfaceview.ui.gallery
+package com.rifafauzi.customcamera.ui.gallery
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -19,10 +19,10 @@ import com.bumptech.glide.Glide
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.text.FirebaseVisionText
-import com.rifafauzi.customcamerasurfaceview.R
-import com.rifafauzi.customcamerasurfaceview.databinding.FragmentGalleryBinding
-import com.rifafauzi.customcamerasurfaceview.model.KTPModel
-import com.rifafauzi.customcamerasurfaceview.common.ResultState
+import com.rifafauzi.customcamera.R
+import com.rifafauzi.customcamera.databinding.FragmentGalleryBinding
+import com.rifafauzi.customcamera.model.KTPModel
+import com.rifafauzi.customcamera.common.ResultState
 
 /**
  * A simple [Fragment] subclass.

@@ -10,7 +10,7 @@
 
         <variable
             name="model"
-            type="com.rifafauzi.customcamerasurfaceview.model.KTPModel" />
+            type="com.rifafauzi.customcamera.model.KTPModel" />
 
         <variable
             name="showLoading"

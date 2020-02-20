@@ -1,13 +1,13 @@
-package com.rifafauzi.customcamerasurfaceview.ui.gallery
+package com.rifafauzi.customcamera.ui.gallery
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rifafauzi.customcamerasurfaceview.R
-import com.rifafauzi.customcamerasurfaceview.api.ApiClient
-import com.rifafauzi.customcamerasurfaceview.model.KTPModel
-import com.rifafauzi.customcamerasurfaceview.common.ResultState
+import com.rifafauzi.customcamera.R
+import com.rifafauzi.customcamera.api.ApiClient
+import com.rifafauzi.customcamera.model.KTPModel
+import com.rifafauzi.customcamera.common.ResultState
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.concurrent.TimeoutException

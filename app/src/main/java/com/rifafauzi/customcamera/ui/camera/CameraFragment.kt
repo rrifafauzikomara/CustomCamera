@@ -1,4 +1,4 @@
-package com.rifafauzi.customcamerasurfaceview.ui.camera
+package com.rifafauzi.customcamera.ui.camera
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -20,10 +20,10 @@ import androidx.camera.core.Preview
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.rifafauzi.customcamerasurfaceview.R
-import com.rifafauzi.customcamerasurfaceview.utils.FileCreator
-import com.rifafauzi.customcamerasurfaceview.utils.FileCreator.JPEG_FORMAT
-import com.rifafauzi.customcamerasurfaceview.utils.UseCaseConfigBuilder
+import com.rifafauzi.customcamera.R
+import com.rifafauzi.customcamera.utils.FileCreator
+import com.rifafauzi.customcamera.utils.FileCreator.JPEG_FORMAT
+import com.rifafauzi.customcamera.utils.UseCaseConfigBuilder
 import kotlinx.android.synthetic.main.fragment_camera.*
 import java.io.*
 import java.util.concurrent.Executor

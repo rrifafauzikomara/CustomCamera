@@ -1,4 +1,4 @@
-package com.rifafauzi.customcamerasurfaceview.ui.main
+package com.rifafauzi.customcamera.ui.main
 
 import android.os.Bundle
 import android.view.View
@@ -7,7 +7,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.rifafauzi.customcamerasurfaceview.R
+import com.rifafauzi.customcamera.R
 
 class MainActivity : AppCompatActivity() {
 

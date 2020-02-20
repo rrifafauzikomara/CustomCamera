@@ -1,4 +1,4 @@
-package com.rifafauzi.customcamerasurfaceview.ui.splash
+package com.rifafauzi.customcamera.ui.splash
 
 import android.Manifest
 import android.os.Bundle
@@ -15,7 +15,7 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.rifafauzi.customcamerasurfaceview.R
+import com.rifafauzi.customcamera.R
 import kotlinx.android.synthetic.main.fragment_splash.*
 
 /**
