@@ -15,6 +15,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
@@ -27,6 +28,7 @@ import com.rifafauzi.customcamera.common.ResultState
 /**
  * A simple [Fragment] subclass.
  */
+
 class GalleryFragment : Fragment() {
 
     private lateinit var binding: FragmentGalleryBinding
@@ -82,7 +84,7 @@ class GalleryFragment : Fragment() {
                         hideProgress()
                         hideContent()
                         showNIK()
-                        showDialog("Data tidak ditemukan")
+                        showDialog("Data tidak ditemukan, pastikan menulis NIK dengan benar")
                     }
                     is ResultState.NoInternetConnection -> {
                         hideProgress()
@@ -120,8 +122,8 @@ class GalleryFragment : Fragment() {
             return
         }
 
-        showProgress()
         hideNIK()
+        showProgress()
 
         val firebaseVisionImage = FirebaseVisionImage.fromBitmap(image)
         val textRecognizer = FirebaseVision.getInstance().onDeviceTextRecognizer
@@ -129,17 +131,13 @@ class GalleryFragment : Fragment() {
             .addOnSuccessListener {
 
                 val mutableImage = image.copy(Bitmap.Config.ARGB_8888, true)
-
                 recognizeText(it, mutableImage)
-
                 binding.img.setImageBitmap(mutableImage)
                 hideProgress()
-                showNIK()
             }
             .addOnFailureListener {
-                Toast.makeText(context, "There was some error", Toast.LENGTH_SHORT).show()
                 hideProgress()
-                showNIK()
+                showDialogWithAction("There was some error")
             }
     }
 
@@ -147,11 +145,11 @@ class GalleryFragment : Fragment() {
     private fun recognizeText(result: FirebaseVisionText?, image: Bitmap?) {
 
         val res = mutableListOf<String>()
-
         if (result == null || image == null) {
-            return Toast.makeText(context, "There was some error", Toast.LENGTH_SHORT).show()
+            showDialogWithAction("There was some error")
+            return
         } else if (result.textBlocks.size == 0) {
-            Toast.makeText(context,"Gunakan potrait mode agar teks bisa terbaca", Toast.LENGTH_SHORT).show()
+            showDialogWithAction("Text tidak terbaca, pastikan Anda memfoto KTP")
             return
         }
 
@@ -169,12 +167,12 @@ class GalleryFragment : Fragment() {
         }
 
         if (res.size <= 2) {
-            showDialog("NIK tidak terbaca, silahkan ketik manual")
+            showDialogWithAction("Text tidak terbaca, pastikan Anda memfoto KTP")
         } else {
             if (res[2].isDigitsOnly()) {
-                hideNIK()
                 vm.getListKTP(res[2].toLong())
             } else {
+                showNIK()
                 showDialog("NIK tidak terbaca, silahkan ketik manual")
                 binding.etNIK.setText(res[2])
                 binding.etNIK.addTextChangedListener(object : TextWatcher {
@@ -231,6 +229,16 @@ class GalleryFragment : Fragment() {
         AlertDialog.Builder(requireContext())
             .setMessage(message)
             .setPositiveButton(android.R.string.ok) { dialogInterface, _ ->
+                dialogInterface.dismiss()
+            }
+            .show()
+    }
+
+    private fun showDialogWithAction(message: String) {
+        AlertDialog.Builder(requireContext())
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok) { dialogInterface, _ ->
+                findNavController().popBackStack()
                 dialogInterface.dismiss()
             }
             .show()
