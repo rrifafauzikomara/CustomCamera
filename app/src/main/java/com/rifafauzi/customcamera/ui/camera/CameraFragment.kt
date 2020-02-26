@@ -6,21 +6,23 @@ import android.graphics.Matrix
 import android.media.MediaScannerConnection
 import android.os.Bundle
 import android.os.Environment
+import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
 import android.view.*
 import android.widget.Toast
 import androidx.camera.core.*
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.TextureViewMeteringPointFactory
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.common.util.concurrent.ListenableFuture
 import com.rifafauzi.customcamera.R
 import com.rifafauzi.customcamera.utils.FileCreator
 import com.rifafauzi.customcamera.utils.FileCreator.JPEG_FORMAT
-import com.rifafauzi.customcamera.utils.UseCaseConfigBuilder
 import kotlinx.android.synthetic.main.fragment_camera.*
 import java.io.*
-import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 /**
@@ -29,12 +31,13 @@ import java.util.concurrent.Executors
 class CameraFragment : Fragment() {
 
     private lateinit var rectangle: View
-    private var preview: Preview? = null
-    private lateinit var mainExecutor: Executor
+
+    private lateinit var processCameraProviderFuture: ListenableFuture<ProcessCameraProvider>
+    private lateinit var processCameraProvider: ProcessCameraProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainExecutor = ContextCompat.getMainExecutor(requireContext())
+        processCameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
     }
 
     override fun onCreateView(
@@ -50,68 +53,112 @@ class CameraFragment : Fragment() {
 
         rectangle = view.findViewById(R.id.rectangle)
 
-        viewFinder.post { setupCamera() }
+        processCameraProviderFuture.addListener(Runnable {
+            processCameraProvider = processCameraProviderFuture.get()
+            viewFinder.post { setupCamera() }
+        }, ContextCompat.getMainExecutor(requireContext()))
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (::processCameraProvider.isInitialized) {
+            processCameraProvider.unbindAll()
+        }
     }
 
     private fun setupCamera() {
-        CameraX.unbindAll()
-        CameraX.bindToLifecycle(
+        processCameraProvider.unbindAll()
+        val camera = processCameraProvider.bindToLifecycle(
             this,
+            CameraSelector.DEFAULT_BACK_CAMERA,
             buildPreviewUseCase(),
             buildImageCaptureUseCase(),
-            buildImageAnalysisUseCase()
-        )
+            buildImageAnalysisUseCase())
+        setupTapForFocus(camera.cameraControl)
     }
 
-    private fun buildPreviewUseCase(): Preview? {
-        preview = Preview(
-            UseCaseConfigBuilder.buildPreviewConfig(
-                viewFinder.display
-            )
-        )
-        preview?.setOnPreviewOutputUpdateListener { previewOutput ->
-            updateViewFinderWithPreview(previewOutput)
-            correctPreviewOutputForDisplay(previewOutput.textureSize)
-        }
+    private fun buildPreviewUseCase(): Preview {
+        val display = viewFinder.display
+        val metrics = DisplayMetrics().also { display.getMetrics(it) }
+        val preview = Preview.Builder()
+            .setTargetRotation(display.rotation)
+            .setTargetResolution(Size(metrics.widthPixels, metrics.heightPixels))
+            .build()
+            .apply {
+                previewSurfaceProvider = viewFinder.previewSurfaceProvider
+            }
+        preview.previewSurfaceProvider = viewFinder.previewSurfaceProvider
         return preview
     }
 
-    private fun updateViewFinderWithPreview(previewOutput: Preview.PreviewOutput) {
-        val parent = viewFinder.parent as ViewGroup
-        parent.removeView(viewFinder)
-        parent.addView(viewFinder, 0)
-        viewFinder.surfaceTexture = previewOutput.surfaceTexture
-    }
+    private fun buildImageCaptureUseCase(): ImageCapture {
+        val display = viewFinder.display
+        val metrics = DisplayMetrics().also { display.getMetrics(it) }
+        val capture = ImageCapture.Builder()
+            .setTargetRotation(display.rotation)
+            .setTargetResolution(Size(metrics.widthPixels, metrics.heightPixels))
+            .setFlashMode(ImageCapture.FLASH_MODE_AUTO)
+            .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+            .build()
 
-    /**
-     * Corrects the camera/preview's output to the display, by scaling
-     * up/down and/or rotating the camera/preview's output.
-     */
-    private fun correctPreviewOutputForDisplay(textureSize: Size) {
-        val matrix = Matrix()
+        val executor = Executors.newSingleThreadExecutor()
+        cameraCaptureImageButton.setOnClickListener {
+            capture.takePicture(
+                FileCreator.createTempFile(JPEG_FORMAT),
+                executor,
+                object : ImageCapture.OnImageSavedCallback {
+                    override fun onImageSaved(file: File) {
+                        val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+                        val rotatedBitmap = bitmap.rotate(90)
+                        val croppedImage = cropImage(rotatedBitmap, viewFinder, rectangle)
+                        val path = saveImage(croppedImage)
+                        requireActivity().runOnUiThread {
+                            launchGalleryFragment(path)
+                        }
+                    }
 
-        val centerX = viewFinder.width / 2f
-        val centerY = viewFinder.height / 2f
-
-        val displayRotation = getDisplayRotation()
-        val (dx, dy) = getDisplayScalingFactors(textureSize)
-
-        matrix.postRotate(displayRotation, centerX, centerY)
-        matrix.preScale(dx, dy, centerX, centerY)
-
-        // Correct preview output to account for display rotation and scaling
-        viewFinder.setTransform(matrix)
-    }
-
-    private fun getDisplayRotation(): Float {
-        val rotationDegrees = when (viewFinder.display.rotation) {
-            Surface.ROTATION_0 -> 0
-            Surface.ROTATION_90 -> 90
-            Surface.ROTATION_180 -> 180
-            Surface.ROTATION_270 -> 270
-            else -> throw IllegalStateException("Unknown display rotation ${viewFinder.display.rotation}")
+                    override fun onError(imageCaptureError: Int, message: String, cause: Throwable?) {
+                        Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_LONG).show()
+                        Log.e("CameraFragment", "Capture error $imageCaptureError: $message", cause)
+                    }
+                })
         }
-        return -rotationDegrees.toFloat()
+        return capture
+    }
+
+    private fun buildImageAnalysisUseCase(): ImageAnalysis {
+        val display = viewFinder.display
+        val metrics = DisplayMetrics().also { display.getMetrics(it) }
+        val analysis = ImageAnalysis.Builder()
+            .setTargetRotation(display.rotation)
+            .setTargetResolution(Size(metrics.widthPixels, metrics.heightPixels))
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_BLOCK_PRODUCER)
+            .setImageQueueDepth(10)
+            .build()
+        analysis.setAnalyzer(
+            Executors.newSingleThreadExecutor(),
+            ImageAnalysis.Analyzer { imageProxy ->
+                Log.d("CameraFragment", "Image analysis result $imageProxy")
+                imageProxy.close()
+            })
+        return analysis
+    }
+
+    private fun setupTapForFocus(cameraControl: CameraControl) {
+        viewFinder.setOnTouchListener { _, event ->
+            if (event.action != MotionEvent.ACTION_UP) {
+                return@setOnTouchListener true
+            }
+
+            val textureView = viewFinder.getChildAt(0) as? TextureView
+                ?: return@setOnTouchListener true
+            val factory = TextureViewMeteringPointFactory(textureView)
+
+            val point = factory.createPoint(event.x, event.y)
+            val action = FocusMeteringAction.Builder.from(point).build()
+            cameraControl.startFocusAndMetering(action)
+            return@setOnTouchListener true
+        }
     }
 
     /**
@@ -206,70 +253,6 @@ class CameraFragment : Fragment() {
             matrix,
             true
         )
-    }
-
-    private fun getDisplayScalingFactors(textureSize: Size): Pair<Float, Float> {
-        val cameraPreviewRation = textureSize.height / textureSize.width.toFloat()
-        val scaledWidth: Int
-        val scaledHeight: Int
-        if (viewFinder.width > viewFinder.height) {
-            scaledHeight = viewFinder.width
-            scaledWidth = (viewFinder.width * cameraPreviewRation).toInt()
-        } else {
-            scaledHeight = viewFinder.height
-            scaledWidth = (viewFinder.height * cameraPreviewRation).toInt()
-        }
-        val dx = scaledWidth / viewFinder.width.toFloat()
-        val dy = scaledHeight / viewFinder.height.toFloat()
-        return Pair(dx, dy)
-    }
-
-    private fun buildImageCaptureUseCase(): ImageCapture {
-        val capture = ImageCapture(
-            UseCaseConfigBuilder.buildImageCaptureConfig(
-                viewFinder.display
-            )
-        )
-        cameraCaptureImageButton.setOnClickListener {
-            capture.takePicture(
-                FileCreator.createTempFile(JPEG_FORMAT),
-                mainExecutor,
-                object : ImageCapture.OnImageSavedListener {
-                    override fun onImageSaved(file: File) {
-                        CameraX.unbind(preview)
-                        val bitmap = BitmapFactory.decodeFile(file.absolutePath)
-                        val rotatedBitmap = bitmap.rotate(90)
-                        val croppedImage = cropImage(rotatedBitmap, viewFinder, rectangle)
-                        val path = saveImage(croppedImage)
-                        requireActivity().runOnUiThread {
-                            launchGalleryFragment(path)
-                        }
-                    }
-
-                    override fun onError(imageCaptureError: ImageCapture.ImageCaptureError, message: String, cause: Throwable?) {
-                        Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_LONG).show()
-                    }
-                }
-            )
-        }
-        return capture
-    }
-
-    private fun buildImageAnalysisUseCase(): ImageAnalysis {
-        val analysis = ImageAnalysis(
-            UseCaseConfigBuilder.buildImageAnalysisConfig(
-                viewFinder.display
-            )
-        )
-        analysis.setAnalyzer(
-            Executors.newSingleThreadExecutor(),
-            ImageAnalysis.Analyzer { image, rotationDegrees ->
-                Log.d(
-                    "CameraFragment",
-                    "Image analysis: $image - Rotation degrees: $rotationDegrees"
-                )
-            })
-        return analysis
     }
 
     private fun launchGalleryFragment(path: String) {

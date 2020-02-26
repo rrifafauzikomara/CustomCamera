@@ -118,7 +118,7 @@ class GalleryFragment : Fragment() {
 
     private fun analyzeImage(image: Bitmap?) {
         if (image == null) {
-            Toast.makeText(context, "Image is null", Toast.LENGTH_SHORT).show()
+            showDialogWithAction("Image is null")
             return
         }
 

@@ -18,23 +18,22 @@
 
     <View
         android:id="@+id/rectangle"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_width="450dp"
+        android:layout_height="300dp"
         android:layout_margin="16dp"
         android:background="@drawable/rectangle"
-        app:layout_constraintBottom_toTopOf="@+id/cameraBottomView"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cameraBottomView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/cameraBottomView"
-        android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_width="130dp"
+        android:layout_height="match_parent"
         android:background="@color/black_50"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageButton
         android:id="@+id/cameraCaptureImageButton"
