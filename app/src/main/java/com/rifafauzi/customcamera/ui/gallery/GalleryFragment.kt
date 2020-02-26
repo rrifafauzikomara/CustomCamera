@@ -149,7 +149,7 @@ class GalleryFragment : Fragment() {
             showDialogWithAction("There was some error")
             return
         } else if (result.textBlocks.size == 0) {
-            showDialogWithAction("Text tidak terbaca, pastikan Anda memfoto KTP")
+            showDialogWithAction("Pastikan Anda memfoto KTP Anda dan pastikan KTP Anda berada di dalam frame yang telah disediakan")
             return
         }
 
@@ -167,13 +167,13 @@ class GalleryFragment : Fragment() {
         }
 
         if (res.size <= 2) {
-            showDialogWithAction("Text tidak terbaca, pastikan Anda memfoto KTP")
+            showDialogWithAction("Pastikan Anda memfoto KTP Anda dan pastikan KTP Anda berada di dalam frame yang telah disediakan")
         } else {
             if (res[2].isDigitsOnly()) {
                 vm.getListKTP(res[2].toLong())
             } else {
                 showNIK()
-                showDialog("NIK tidak terbaca, silahkan ketik manual")
+                showDialog("NIK Anda tidak terbaca, silahkan masukan NIK Anda secara manual")
                 binding.etNIK.setText(res[2])
                 binding.etNIK.addTextChangedListener(object : TextWatcher {
 
