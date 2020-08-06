@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  
 object ApiClient {
 
-    private const val BASE_URL = "http://paymentcc.sinarmasmsiglife.co.id:9885/api/json/"
+    private const val BASE_URL = "URL"
 
     private val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
         if (BuildConfig.DEBUG) this.level = HttpLoggingInterceptor.Level.BODY
